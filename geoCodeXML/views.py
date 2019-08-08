@@ -1,25 +1,31 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 import xlrd 
 import requests
 import json
 import xlwt 
 from xlwt import Workbook
 from django.http import HttpResponse
+from django.contrib import messages
+
 
 def index(request):
     if "GET" == request.method:
-        return render(request, 'geoCodeXML/index.html', {})
+        return render(request, 'geoCodeXML/index.html')
     else:
-        uploaded_file_path = request.POST.get('pathOfXLFile')
-        wb = xlrd.open_workbook(uploaded_file_path)
-        sheet = wb.sheet_by_index(0)
+        filePathName = request.POST.get('pathOfXLFile')
+        XLworkBook = xlrd.open_workbook(filePathName)
+        sheet = XLworkBook.sheet_by_index(0)
+
         sheet.cell_value(0, 0)
+        
         wb = Workbook()
-        sheet1 = wb.add_sheet('Sheet1')
-        sheet1.write(0, 0, 'Addresses')
-        sheet1.write(0, 1, 'lattitude')
-        sheet1.write(0, 2, 'longitude')
-        googleGeoCodingAPIKey = 'AIzaSyD4YHhE8VsMnWgFPV0NXy_FQCuzkw-OAjo'
+        finalResult = wb.add_sheet('finalResult')
+        finalResult.write(0, 0, 'Addresses')
+        finalResult.write(0, 1, 'lattitude')
+        finalResult.write(0, 2, 'longitude')
+
+
+        googleGeoCodingAPIKey = 'AIzaSyDscGlVbYHZvb5vO4GHFoucYlqXF5J_Zc8'
         for i in range(1,sheet.nrows):
             address = sheet.cell_value(i, 0)
             addressList = address.split(" ")
@@ -28,11 +34,10 @@ def index(request):
                 temp +=data
             requestURL = 'https://maps.googleapis.com/maps/api/geocode/json?address='+temp+'&key='+googleGeoCodingAPIKey
             APIresponse = requests.get(requestURL)
-            dataDictionary = APIresponse.json()
-            sheet1.write(i,0,address)
-            sheet1.write(i,1,dataDictionary.get("results")[0].get("geometry").get("location").get("lat"))
-            sheet1.write(i,2,dataDictionary.get("results")[0].get("geometry").get("location").get("lng"))
+            APIresponseJSON = APIresponse.json()
+            finalResult.write(i,0,address)
+            finalResult.write(i,1,APIresponseJSON.get("results")[0].get("geometry").get("location").get("lat"))
+            finalResult.write(i,2,APIresponseJSON.get("results")[0].get("geometry").get("location").get("lng"))
             wb.save('finalResult.xls')
-        response = HttpResponse(wb, content_type='application/vnd.ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="finalResult.xls"'
-        return response
+        messages.success(request,'File Processed Successfully :)')
+        return redirect('index')
