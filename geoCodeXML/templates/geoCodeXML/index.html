@@ -1,31 +1,41 @@
+{% load static %}
 <html>
     <head>
-        <title>
-            Excel file upload and processing : Django Example : ThePythonDjango.Com
-        </title>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     </head>
-    <body style="margin-top: 30px;margin-left: 30px;">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="text"
-                   title="FILEPATH"
-                   name="pathOfXLFile"
-                   style="border: 1px solid black; padding: 5px;"
-                   required="required">
-            <p>
-            <input type="submit"
-                   value="Upload"
-                   style="border: 1px solid green; padding:5px; border-radius: 2px; cursor: pointer;">
-        </form>
-
-        <p></p>
-        <hr>
-
-        {% for row in excel_data %}
-            {% for cell in row %}
-                {{ cell }}&nbsp;&nbsp;
-            {% endfor %}
+    <body>
+        {%if messages%}
+            {%for message in messages%}
+                <div class="alert alert-{{message.tags}}">
+                {{message}}
+                </div>
+            {%endfor%}
+        {%endif%}
+    <div class="h-100 row align-items-center ml-5 mr-5">
+        <div class="col ml-5 mr-5">
+            <h1 class="text-success text-center mb-5 font-weight-light">GEOCODING API - XLS</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" title="FILEPATH" name="pathOfXLFile" required="required" class="form-control form-control-lg font-weight-light" placeholder="PathName of .xls file">
+                <br>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-info">SUBMIT</button>
+                </div>
+            </form>
             <br>
-        {% endfor %}
+            <ul class="list-unstyled">
+                <li><h4 class="font-weight-light" style="letter-spacing: 0.0625em;">Instructions : </h4>
+                    <ul>
+                            <li class="font-weight-light" style="letter-spacing: 0.0825em;">Copy the .xls file, and paste it's path in input field provided above.</li>
+                            <li class="font-weight-light" style="letter-spacing: 0.0825em;">Hit the SUBMIT button.</li>
+                            <li class="font-weight-light" style="letter-spacing: 0.0825em;">Check your folder, you will find a file with name - finalResult.xls</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </html>
