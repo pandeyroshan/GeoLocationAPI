@@ -6,6 +6,9 @@ import xlwt
 from xlwt import Workbook
 from django.http import HttpResponse
 from django.contrib import messages
+from django.utils.encoding import smart_str
+from openpyxl import load_workbook
+from pandas import DataFrame
 
 
 def index(request):
@@ -39,5 +42,8 @@ def index(request):
             finalResult.write(i,1,APIresponseJSON.get("results")[0].get("geometry").get("location").get("lat"))
             finalResult.write(i,2,APIresponseJSON.get("results")[0].get("geometry").get("location").get("lng"))
             wb.save('finalResult.xls')
+        f = open('finalResult.xls','rb')
+        response = HttpResponse(f, content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="finalResult.xls"'
         messages.success(request,'File Processed Successfully :)')
-        return redirect('index')
+        return response
