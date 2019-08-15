@@ -41,7 +41,7 @@ def index(request):
             finalResult.write(i,0,address)
             finalResult.write(i,1,APIresponseJSON.get("results")[0].get("geometry").get("location").get("lat"))
             finalResult.write(i,2,APIresponseJSON.get("results")[0].get("geometry").get("location").get("lng"))
-            wb.save('finalResult.xls')
+            wb.save('finalResultXL.xls')
         f = open('finalResult.xls','rb')
         response = HttpResponse(f, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename="finalResult.xls"'
